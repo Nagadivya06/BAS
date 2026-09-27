@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)http://127.0.0.1:5501/sih%20prototype/ResQsetu.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResQSetu - Emergency Resource Coordinator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f2f5f8;
+            color: #172033;
+        }
+
+        /* HEADER */
+        header {
+            background: #102a43;
+            color: white;
+            padding: 22px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            color: #d9e6f2;
+        }
+
+        .status {
+            background: #20a36a;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* MAIN */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 25px auto;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            margin-bottom: 5px;
+        }
+
+        .section-title p {
+            color: #65758b;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #102a43;
+            border-bottom: 1px solid #e4e8ed;
+            padding-bottom: 12px;
+        }
+
+        /* FORM */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccd5df;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        /* MAP */
+        .map {
+            height: 310px;
+            border-radius: 12px;
+
+            background:
+                linear-gradient(45deg, #d9e4d1 25%, transparent 25%),
+                linear-gradient(-45deg, #d9e4d1 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #d9e4d1 75%),
+                linear-gradient(-45deg, transparent 75%, #d9e4d1 75%);
+
+            background-size: 80px 80px;
+            background-position:
+                0 0,
+                0 40px,
+                40px -40px,
+                -40px 0px;
+
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #b8c8d8;
+        }
+
+        .road {
+            position: absolute;
+            background: #a8a8a8;
+            height: 12px;
+            width: 120%;
+            top: 45%;
+            left: -10%;
+            transform: rotate(-15deg);
+        }
+
+        .river {
+            position: absolute;
+            background: #6fa8dc;
+            height: 70px;
+            width: 120%;
+            top: 65%;
+            left: -10%;
+            transform: rotate(8deg);
+            opacity: 0.8;
+        }
+
+        .location-marker {
+            position: absolute;
+            top: 38%;
+            left: 52%;
+            font-size: 35px;
+            transform: translate(-50%, -50%);
+        }
+
+        .map-label {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 7px;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* SCORE */
+        .score-box {
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            background: #fff4e5;
+            border: 1px solid #ffd59b;
+        }
+
+        .score {
+            font-size: 55px;
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .score-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* RESOURCE */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .resource {
+            border: 1px solid #dce3ea;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fafcfe;
+        }
+
+        .resource strong {
+            display: block;
+            margin-bottom: 7px;
+        }
+
+        .available {
+            color: #16834d;
+            font-weight: bold;
+        }
+
+        .unavailable {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        /* RECOMMENDATION */
+        .recommendation {
+            background: #eaf6ff;
+            border-left: 6px solid #1976d2;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .recommendation h3 {
+            border: none;
+            margin-bottom: 8px;
+        }
+
+        .fallback {
+            background: #fff8e6;
+            border-left: 6px solid #f0ad4e;
+            padding: 15px;
+            margin-top: 12px;
+            border-radius: 8px;
+        }
+
+        /* BUTTON */
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #1976d2;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #125ca1;
+        }
+
+        /* HOSPITAL */
+        .hospital {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info {
+            background: #f7f9fb;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .info span {
+            display: block;
+            font-size: 13px;
+            color: #718096;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 800px) {
+
+            .grid,
+            .form-grid,
+            .hospital {
+                grid-template-columns: 1fr;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+<link type="text/css" rel="stylesheet" href="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/css/mcafee_fonts.css"></head>
+
+<body>
+
+<header>
+
+    <div>
+        <h1>🚨 ResQSetu</h1>
+        <p>Intelligent Emergency Resource Coordinator</p>
+    </div>
+
+    <div class="status">
+        ● System Online
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="section-title">
+
+        <h2>Emergency Coordination Dashboard</h2>
+
+        <p>
+            Analyze the emergency and coordinate the safest available resources.
+        </p>
+
+    </div>
+
+
+    <!-- PATIENT DETAILS -->
+
+    <div class="card">
+
+        <h3>👤 Patient &amp; Emergency Details</h3>
+
+        <div class="form-grid">
+
+            <div>
+
+                <label>Patient Name</label>
+
+                <input type="text" id="patientName" placeholder="Enter patient name" fdprocessedid="61al3w">
+
+            </div>
+
+
+            <div>
+
+                <label>Age</label>
+
+                <input type="number" id="age" placeholder="Enter age" fdprocessedid="loalyh">
+
+            </div>
+
+
+            <div>
+
+                <label>Contact Number</label>
+
+                <input type="tel" id="contact" placeholder="+91 XXXXX XXXXX" fdprocessedid="a0a8b9">
+
+            </div>
+
+
+            <div>
+
+                <label>Emergency Type</label>
+
+                <select id="disaster" fdprocessedid="3psv8">
+
+                    <option value="flood">
+                        Flood
+                    </option>
+
+                    <option value="landslide">
+                        Landslide
+                    </option>
+
+                    <option value="accident">
+                        Road Accident
+                    </option>
+
+                    <option value="medical">
+                        Medical Emergency
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Medical Urgency</label>
+
+                <select id="urgency" fdprocessedid="4sarb5">
+
+                    <option value="90">
+                        Critical
+                    </option>
+
+                    <option value="70">
+                        High
+                    </option>
+
+                    <option value="40">
+                        Moderate
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Isolation / Accessibility</label>
+
+                <select id="isolation" fdprocessedid="bn1ago">
+
+                    <option value="90">
+                        Severely Isolated
+                    </option>
+
+                    <option value="70">
+                        Isolated
+                    </option>
+
+                    <option value="50">
+                        Partially Accessible
+                    </option>
+
+                    <option value="30">
+                        Accessible
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Weather Condition</label>
+
+                <select id="weather" fdprocessedid="nuvyz8">
+
+                    <option>
+                        Heavy Rain
+                    </option>
+
+                    <option>
+                        Storm
+                    </option>
+
+                    <option>
+                        Normal
+                    </option>
+
+                    <option>
+                        Extreme Weather
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>Road / Route Condition</label>
+
+                <select id="road" fdprocessedid="6g2hy">
+
+                    <option value="unsafe">
+                        Blocked / Unsafe
+                    </option>
+
+                    <option value="limited">
+                        Limited Access
+                    </option>
+
+                    <option value="safe">
+                        Accessible
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="full">
+
+                <label>Emergency Description</label>
+
+                <input type="text" id="description" placeholder="Example: Patient trapped inside flooded house with leg injury" fdprocessedid="52vdcj">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOCATION + RESQ SCORE -->
+
+    <div class="grid">
+
+
+        <!-- LOCATION MAP -->
+
+        <div class="card">
+
+            <h3>📍 Disaster Location</h3>
+
+            <div class="map">
+
+                <div class="map-label">
+                    Patient Location: Flood Zone
+                </div>
+
+                <div class="road"></div>
+
+                <div class="river"></div>
+
+                <div class="location-marker">
+                    📍
+                </div>
+
+            </div>
+
+
+            <p>
+                <strong>GPS:</strong>
+                16.5062° N, 80.6480° E
+            </p>
+
+
+            <p>
+                <strong>Location:</strong>
+                Isolated residential area near flood-affected zone
+            </p>
+
+        </div>
+
+
+        <!-- RESQ SCORE -->
+
+        <div class="card">
+
+            <h3>🧠 ResQ Assessment</h3>
+
+            <div class="score-box">
+
+                <!-- ResQScore displayed as percentage -->
+
+                <div class="score" id="score">
+                    0%
+                </div>
+
+                <div class="score-label" id="level">
+                    Awaiting Assessment
+                </div>
+
+                <p id="scoreMessage">
+                    Enter emergency details and click assess.
+                </p>
+
+            </div>
+
+
+            <br>
+
+
+            <button onclick="assessEmergency()" fdprocessedid="5u5lul">
+                Analyze Emergency
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ENVIRONMENT -->
+
+    <div class="card">
+
+        <h3>🌦️ Situation Analysis</h3>
+
+        <div class="resource-grid">
+
+
+            <div class="resource">
+
+                <strong>🌧️ Weather</strong>
+
+                <span id="weatherDisplay">
+                    Heavy Rain
+                </span>
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🛣️ Route Status</strong>
+
+                <span id="roadDisplay">
+                    Blocked / Unsafe
+                </span>
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>📡 GPS Signal</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🔋 Network Status</strong>
+
+                <span class="available">
+                    Connected
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- RESOURCES -->
+
+    <div class="card">
+
+        <h3>🚑 Available Emergency Resources</h3>
+
+        <div class="resource-grid">
+
+
+            <div class="resource">
+
+                <strong>🚁 Medical Drone</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+                <br>
+
+                ETA: 8 minutes
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🚑 Ambulance</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+                <br>
+
+                ETA: 25 minutes
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🚤 Rescue Boat</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+                <br>
+
+                ETA: 15 minutes
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🧑‍🚒 Rescue Team</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+                <br>
+
+                ETA: 20 minutes
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🏥 Nearest Hospital</strong>
+
+                <span class="available">
+                    Receiving Patients
+                </span>
+
+                <br>
+
+                Distance: 12 km
+
+            </div>
+
+
+            <div class="resource">
+
+                <strong>🌐 Volunteer Network</strong>
+
+                <span class="available">
+                    Available
+                </span>
+
+                <br>
+
+                6 volunteers nearby
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- RECOMMENDATION -->
+
+    <div class="card">
+
+        <h3>🤖 Intelligent Resource Recommendation</h3>
+
+        <div class="recommendation">
+
+            <h3 id="recommendationTitle">
+                Recommended Response
+            </h3>
+
+
+            <p id="recommendationText">
+                Complete the emergency assessment to generate a recommendation.
+            </p>
+
+
+            <div class="fallback">
+
+                <strong>🔄 Adaptive Fallback</strong>
+
+                <p id="fallbackText">
+
+                    If the primary resource becomes unavailable or unsafe,
+                    ResQSync will recommend an alternative resource.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- HOSPITAL HANDOVER -->
+
+    <div class="card">
+
+        <h3>🏥 Hospital Handover</h3>
+
+        <div class="hospital">
+
+
+            <div class="info">
+
+                <span>Patient</span>
+
+                <strong id="handoverPatient">
+                    Not entered
+                </strong>
+
+            </div>
+
+
+            <div class="info">
+
+                <span>Age</span>
+
+                <strong id="handoverAge">
+                    Not entered
+                </strong>
+
+            </div>
+
+
+            <div class="info">
+
+                <span>Emergency</span>
+
+                <strong id="handoverEmergency">
+                    Not assessed
+                </strong>
+
+            </div>
+
+
+            <div class="info">
+
+                <span>Medical Priority</span>
+
+                <strong id="handoverPriority">
+                    Not assessed
+                </strong>
+
+            </div>
+
+
+            <div class="info">
+
+                <span>Destination Hospital</span>
+
+                <strong>
+                    District Emergency Hospital
+                </strong>
+
+            </div>
+
+
+            <div class="info">
+
+                <span>Handover Status</span>
+
+                <strong style="color:#16834d;">
+                    Ready for Handover
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    ResQSetu Prototype |
+    Intelligent Emergency Resource Coordination System
+
+</footer>
+
+
+<script>
+
+function assessEmergency() {
+
+    let name =
+        document.getElementById("patientName").value;
+
+    let age =
+        document.getElementById("age").value;
+
+    let disaster =
+        document.getElementById("disaster").value;
+
+    let urgency =
+        Number(
+            document.getElementById("urgency").value
+        );
+
+    let isolation =
+        Number(
+            document.getElementById("isolation").value
+        );
+
+    let weather =
+        document.getElementById("weather").value;
+
+    let road =
+        document.getElementById("road").value;
+
+
+    /* =========================
+       RESQ SCORE CALCULATION
+       ========================= */
+
+    let score =
+        Math.round(
+            (urgency * 0.5) +
+            (isolation * 0.5)
+        );
+
+
+    let level;
+
+
+    if (score >= 80) {
+
+        level = "CRITICAL";
+
+    }
+
+    else if (score >= 60) {
+
+        level = "HIGH";
+
+    }
+
+    else {
+
+        level = "MODERATE";
+
+    }
+
+
+    /*
+       IMPORTANT:
+       ResQScore is displayed as a percentage.
+       Example: 85 becomes 85%
+    */
+
+    document.getElementById("score").innerText =
+        score + "%";
+
+
+    document.getElementById("level").innerText =
+        level;
+
+
+    document.getElementById("scoreMessage").innerText =
+        "Emergency analyzed using medical urgency and accessibility.";
+
+
+    /* =========================
+       WEATHER + ROAD
+       ========================= */
+
+    document.getElementById("weatherDisplay").innerText =
+        weather;
+
+
+    document.getElementById("roadDisplay").innerText =
+        document.getElementById("road").options[
+            document.getElementById("road").selectedIndex
+        ].text;
+
+
+    /* =========================
+       RESOURCE SELECTION
+       ========================= */
+
+    let recommendation = "";
+
+    let fallback = "";
+
+
+    if (disaster === "flood") {
+
+        if (road === "unsafe") {
+
+            recommendation =
+                "🚁 Medical Drone + 🚤 Rescue Boat";
+
+            fallback =
+                "If the drone cannot operate because of heavy rain or unsafe flying conditions, dispatch the Rescue Boat followed by an Ambulance when the route becomes accessible.";
+
+        }
+
+        else {
+
+            recommendation =
+                "🚑 Ambulance + 🧑‍🚒 Rescue Team";
+
+            fallback =
+                "If road access becomes unsafe, switch to Rescue Boat or Medical Drone depending on weather conditions.";
+
+        }
+
+    }
+
+
+    else if (disaster === "landslide") {
+
+        recommendation =
+            "🧑‍🚒 Rescue Team + 🚁 Medical Drone";
+
+        fallback =
+            "If drone operation becomes unsafe, prioritize the Rescue Team and coordinate ambulance access from the nearest safe route.";
+
+    }
+
+
+    else if (disaster === "accident") {
+
+        recommendation =
+            "🚑 Ambulance + 🧑‍🚒 Rescue Team";
+
+        fallback =
+            "If the nearest ambulance is unavailable, automatically request the next available ambulance and notify the hospital.";
+
+    }
+
+
+    else {
+
+        recommendation =
+            "🚑 Ambulance + 🏥 Hospital";
+
+        fallback =
+            "If ambulance access is delayed, notify nearby emergency responders and prepare hospital resources in advance.";
+
+    }
+
+
+    /* =========================
+       RECOMMENDATION DISPLAY
+       ========================= */
+
+    document.getElementById(
+        "recommendationTitle"
+    ).innerText =
+        "Recommended Response: " + level;
+
+
+    document.getElementById(
+        "recommendationText"
+    ).innerHTML =
+        "<strong>" +
+        recommendation +
+        "</strong><br><br>" +
+        "The system selected resources based on emergency severity, accessibility, disaster type, route condition and environmental conditions.";
+
+
+    document.getElementById(
+        "fallbackText"
+    ).innerText =
+        fallback;
+
+
+    /* =========================
+       HOSPITAL HANDOVER
+       ========================= */
+
+    document.getElementById(
+        "handoverPatient"
+    ).innerText =
+        name || "Patient Name Not Entered";
+
+
+    document.getElementById(
+        "handoverAge"
+    ).innerText =
+        age || "Not Entered";
+
+
+    document.getElementById(
+        "handoverEmergency"
+    ).innerText =
+        disaster.toUpperCase();
+
+
+    document.getElementById(
+        "handoverPriority"
+    ).innerText =
+        level;
+
+}
+
+</script>
+
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+<span id="PING_CONTENT_PUSH_NOTIFICATION" style="display: none;"></span><span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span><span id="PING_CONTENT_DLS_POPUP" style="display: none;"></span><div style="background-color: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; bottom: 15px; display: block; margin: 0px; opacity: 1; padding: 0px; position: fixed; right: 15px; z-index: 2147483647;"><template shadowrootmode="closed"><style>/*!
+ * 
+ *     MCAFEE RESTRICTED CONFIDENTIAL
+ *     Copyright (c) 2026 McAfee, LLC
+ *
+ *     The source code contained or described herein and all documents related
+ *     to the source code ("Material") are owned by McAfee or its
+ *     suppliers or licensors. Title to the Material remains with McAfee
+ *     or its suppliers and licensors. The Material contains trade
+ *     secrets and proprietary and confidential information of McAfee or its
+ *     suppliers and licensors. The Material is protected by worldwide copyright
+ *     and trade secret laws and treaty provisions. No part of the Material may
+ *     be used, copied, reproduced, modified, published, uploaded, posted,
+ *     transmitted, distributed, or disclosed in any way without McAfee's prior
+ *     express written permission.
+ *
+ *     No license under any patent, copyright, trade secret or other intellectual
+ *     property right is granted to or conferred upon you by disclosure or
+ *     delivery of the Materials, either expressly, by implication, inducement,
+ *     estoppel or otherwise. Any license under such intellectual property rights
+ *     must be expressed and approved by McAfee in writing.
+ *
+ */
+@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Thin.ttf") format("truetype");font-weight:100;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-ThinItalic.ttf") format("truetype");font-weight:100;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-ExtraLight.ttf") format("truetype");font-weight:200;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-ExtraLightItalic.ttf") format("truetype");font-weight:200;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Light.ttf") format("truetype");font-weight:300;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-LightItalic.ttf") format("truetype");font-weight:300;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Regular.ttf") format("truetype");font-weight:400;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Italic.ttf") format("truetype");font-weight:400;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Medium.ttf") format("truetype");font-weight:500;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-MediumItalic.ttf") format("truetype");font-weight:500;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-SemiBold.ttf") format("truetype");font-weight:600;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-SemiBoldItalic.ttf") format("truetype");font-weight:600;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Bold.ttf") format("truetype");font-weight:700;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-BoldItalic.ttf") format("truetype");font-weight:700;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-ExtraBold.ttf") format("truetype");font-weight:800;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-ExtraBoldItalic.ttf") format("truetype");font-weight:800;font-style:italic}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-Black.ttf") format("truetype");font-weight:900;font-style:normal}@font-face{font-family:"McAfeePoppins";src:url("../../../fonts/Poppins-BlackItalic.ttf") format("truetype");font-weight:900;font-style:italic}*{border:0;box-sizing:border-box;font:inherit;font-family:"McAfeePoppins",Helvetica,Arial;font-size:100%;margin:0;padding:0;vertical-align:baseline;outline:none}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}html,body{background-color:#f5f6fa;font-family:"McAfeePoppins",Helvetica,Arial;line-height:1;height:100%;width:100%}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}table{border-collapse:collapse;border-spacing:0}b{font-weight:bold}img{display:block}.dls__container{align-items:center;display:flex;margin:0 auto;margin-top:50px;position:relative}.dls__popup__expanded{align-items:center;overflow:hidden;border-radius:100px;cursor:pointer;display:flex;left:0;padding:15px;position:absolute;height:95px;width:383px;background-color:#fff;transition:all .3s ease-in-out}.dls__popup__expanded .dls__icon{height:65px;width:73px}.content{margin-left:12px}.content .content__images{display:flex;align-items:center;width:250px}.content .content__images .seperator__line{margin-left:5px;margin-right:10px}.content .content__images #dls_close_icon{cursor:pointer;margin-left:auto;margin-right:0px}.content p{font-family:"McAfeePoppins",Helvetica,Arial;font-weight:"400";font-size:14px;line-height:20px;margin-top:8px;color:#4258ff;width:250px;cursor:pointer}.shield{overflow:hidden;box-shadow:0px 2px 4px 0px rgba(33,41,52,.12),0px -1px 2px 0px rgba(0,0,0,.08);align-items:center;border-radius:100px;bottom:0;display:flex;height:95px;justify-content:center;position:absolute;right:0;width:383px;transition:all .3s ease-in-out}.shield__circle{display:flex;justify-content:center;align-items:center;width:55px;height:55px;background-color:#c01818;transition:all .6s ease-in-out .2s;z-index:1;opacity:0}
+
+/*# sourceMappingURL=../sourceMap/chrome/css/download_scan_popup.css.map*/</style><div class="dls__container">
+  <div class="shield" style="background: transparent; opacity: 0.1; display: none;">
+    <div class="shield__circle" style="opacity: 1;">
+      <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/mcafee_logo_white.svg?secret=nmwcd4" x-mcsrc="" id="dls_ballon_icon" x-mcsrcparsed="true">
+    </div>
+    <div class="dls__popup__expanded" style="opacity: 0;">
+      <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/download_scan_icon.svg?secret=nmwcd4" x-mcsrc="" class="dls__icon" x-mcsrcparsed="true">
+      <div class="content">
+        <div class="content__images">
+          <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/mcafee_logo_red.svg?secret=nmwcd4" x-mcsrc="" id="dls_mcafee_logo" x-mcsrcparsed="true">
+          <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/seperator_line.svg?secret=nmwcd4" x-mcsrc="" class="seperator__line" x-mcsrcparsed="true">
+          <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/webadvisor.svg?secret=nmwcd4" x-mcsrc="" x-mcsrcparsed="true">
+          <img src="chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/images/download_scan/close-outline.svg?secret=nmwcd4" x-mcsrc="" id="dls_close_icon" x-mcsrcparsed="true">
+        </div>
+        <p id="download_scan_popup_expanded_descriptions">Your download's being scanned. We'll let you know if there's an issue.</p>
+      </div>
+    </div>
+  </div>
+</div><style>/*!
+ * 
+ *     MCAFEE RESTRICTED CONFIDENTIAL
+ *     Copyright (c) 2026 McAfee, LLC
+ *
+ *     The source code contained or described herein and all documents related
+ *     to the source code ("Material") are owned by McAfee or its
+ *     suppliers or licensors. Title to the Material remains with McAfee
+ *     or its suppliers and licensors. The Material contains trade
+ *     secrets and proprietary and confidential information of McAfee or its
+ *     suppliers and licensors. The Material is protected by worldwide copyright
+ *     and trade secret laws and treaty provisions. No part of the Material may
+ *     be used, copied, reproduced, modified, published, uploaded, posted,
+ *     transmitted, distributed, or disclosed in any way without McAfee's prior
+ *     express written permission.
+ *
+ *     No license under any patent, copyright, trade secret or other intellectual
+ *     property right is granted to or conferred upon you by disclosure or
+ *     delivery of the Materials, either expressly, by implication, inducement,
+ *     estoppel or otherwise. Any license under such intellectual property rights
+ *     must be expressed and approved by McAfee in writing.
+ *
+ */
+.mc-interactive-balloon{position:absolute;right:-50px;bottom:8px;box-shadow:rgba(0,0,0,.12) 0px 0px 10px;height:40px;width:40px;background:#1671ee;border-radius:20px;display:flex;justify-content:center;align-items:center}
+
+/*# sourceMappingURL=../sourceMap/chrome/css/interactive_balloon.css.map*/</style></template></div></body></html>
